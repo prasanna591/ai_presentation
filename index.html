@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Basics: From Theory to Practice</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #333;
+        overflow-x: hidden;
+      }
+
+      .presentation-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .slide {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        padding: 40px;
+        margin: 30px 0;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        transform: translateY(20px);
+        opacity: 0;
+        animation: slideIn 0.8s ease-out forwards;
+      }
+
+      .slide:nth-child(even) {
+        animation-delay: 0.2s;
+      }
+
+      @keyframes slideIn {
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      h1 {
+        color: #4a5568;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        text-align: center;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      h2 {
+        color: #2d3748;
+        font-size: 2em;
+        margin-bottom: 20px;
+        border-bottom: 3px solid #667eea;
+        padding-bottom: 10px;
+      }
+
+      h3 {
+        color: #4a5568;
+        font-size: 1.4em;
+        margin: 20px 0 10px 0;
+      }
+
+      p,
+      li {
+        line-height: 1.6;
+        margin-bottom: 10px;
+        font-size: 1.1em;
+      }
+
+      ul {
+        margin-left: 20px;
+      }
+
+      .ai-types {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .ai-type {
+        background: linear-gradient(45deg, #f7fafc, #edf2f7);
+        padding: 20px;
+        border-radius: 10px;
+        border-left: 5px solid #667eea;
+      }
+
+      .live-demo {
+        background: linear-gradient(45deg, #1a202c, #2d3748);
+        color: white;
+        border-radius: 15px;
+        padding: 30px;
+        margin: 30px 0;
+      }
+
+      .demo-controls {
+        display: flex;
+        gap: 15px;
+        margin: 20px 0;
+        flex-wrap: wrap;
+      }
+
+      .demo-controls input,
+      .demo-controls select,
+      .demo-controls button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1em;
+      }
+
+      .demo-controls button {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+
+      .demo-controls button:hover {
+        transform: translateY(-2px);
+      }
+
+      .demo-output {
+        background: #000;
+        color: #00ff00;
+        padding: 20px;
+        border-radius: 8px;
+        font-family: "Courier New", monospace;
+        margin-top: 20px;
+        min-height: 100px;
+        border: 2px solid #333;
+      }
+
+      .code-section {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        position: relative;
+      }
+
+      .code-header {
+        background: #343a40;
+        color: white;
+        padding: 10px 15px;
+        margin: -20px -20px 15px -20px;
+        border-radius: 8px 8px 0 0;
+        font-weight: bold;
+      }
+
+      pre {
+        background: #2d3748;
+        color: #e2e8f0;
+        padding: 15px;
+        border-radius: 5px;
+        overflow-x: auto;
+        font-size: 0.9em;
+      }
+
+      .highlight {
+        background: linear-gradient(45deg, #ffd89b, #19547b);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: bold;
+      }
+
+      .conclusion {
+        text-align: center;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        padding: 40px;
+        border-radius: 15px;
+      }
+
+      .slide-number {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        background: #667eea;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 0.8em;
+      }
+
+      .animated-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity: 0.1;
+      }
+
+      .floating-shape {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        animation: float 6s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-20px) rotate(180deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="animated-bg" id="animatedBg"></div>
+
+    <div class="presentation-container">
+      <!-- Title Slide -->
+      <div class="slide">
+        <div class="slide-number">1/8</div>
+        <h1>🤖 Artificial Intelligence Basics</h1>
+        <p style="text-align: center; font-size: 1.2em; margin-top: 20px">
+          From Theory to Practice: Understanding AI with Hands-on Python
+        </p>
+        <p style="text-align: center; margin-top: 30px; font-style: italic">
+          An Interactive Journey into Machine Learning
+        </p>
+      </div>
+
+      <!-- What is AI Slide -->
+      <div class="slide">
+        <div class="slide-number">2/8</div>
+        <h2>🧠 What is Artificial Intelligence?</h2>
+        <p>
+          Artificial Intelligence is the simulation of human intelligence in
+          machines programmed to think, learn, and solve problems like humans.
+        </p>
+
+        <div class="ai-types">
+          <div class="ai-type">
+            <h3>🔍 Narrow AI</h3>
+            <p>
+              Designed for specific tasks (Siri, Chess AI, Recommendation
+              systems)
+            </p>
+          </div>
+          <div class="ai-type">
+            <h3>🌐 General AI</h3>
+            <p>
+              Human-level intelligence across all domains (Still theoretical)
+            </p>
+          </div>
+          <div class="ai-type">
+            <h3>🚀 Super AI</h3>
+            <p>Surpasses human intelligence (Future concept)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Machine Learning Slide -->
+      <div class="slide">
+        <div class="slide-number">3/8</div>
+        <h2>📚 Machine Learning: The Core of Modern AI</h2>
+
+        <h3>Types of Machine Learning:</h3>
+        <ul>
+          <li>
+            <strong>Supervised Learning:</strong> Learning from labeled examples
+            (Classification, Regression)
+          </li>
+          <li>
+            <strong>Unsupervised Learning:</strong> Finding patterns in
+            unlabeled data (Clustering, Dimensionality Reduction)
+          </li>
+          <li>
+            <strong>Reinforcement Learning:</strong> Learning through trial and
+            error with rewards
+          </li>
+        </ul>
+
+        <h3>Key Concepts:</h3>
+        <ul>
+          <li>
+            <span class="highlight">Training Data:</span> Examples used to teach
+            the algorithm
+          </li>
+          <li>
+            <span class="highlight">Features:</span> Input variables used to
+            make predictions
+          </li>
+          <li>
+            <span class="highlight">Model:</span> The mathematical
+            representation learned from data
+          </li>
+          <li>
+            <span class="highlight">Prediction:</span> Output generated by the
+            trained model
+          </li>
+        </ul>
+      </div>
+
+      <!-- Applications Slide -->
+      <div class="slide">
+        <div class="slide-number">4/8</div>
+        <h2>🌟 Real-World AI Applications</h2>
+
+        <div class="ai-types">
+          <div class="ai-type">
+            <h3>🏥 Healthcare</h3>
+            <p>Medical imaging, drug discovery, personalized treatment plans</p>
+          </div>
+          <div class="ai-type">
+            <h3>🚗 Transportation</h3>
+            <p>Autonomous vehicles, traffic optimization, route planning</p>
+          </div>
+          <div class="ai-type">
+            <h3>💰 Finance</h3>
+            <p>Fraud detection, algorithmic trading, credit scoring</p>
+          </div>
+          <div class="ai-type">
+            <h3>🎯 Marketing</h3>
+            <p>Recommendation engines, customer segmentation, chatbots</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Python for AI Slide -->
+      <div class="slide">
+        <div class="slide-number">5/8</div>
+        <h2>🐍 Why Python for AI?</h2>
+
+        <ul>
+          <li>
+            <strong>Simple Syntax:</strong> Easy to learn and read, focusing on
+            logic rather than syntax
+          </li>
+          <li>
+            <strong>Rich Libraries:</strong> NumPy, Pandas, Scikit-learn,
+            TensorFlow, PyTorch
+          </li>
+          <li>
+            <strong>Large Community:</strong> Extensive support and resources
+          </li>
+          <li>
+            <strong>Versatility:</strong> Data analysis, web development,
+            automation
+          </li>
+        </ul>
+
+        <h3>Essential AI Libraries:</h3>
+        <div class="code-section">
+          <div class="code-header">Key Python Libraries for AI</div>
+          <pre>
+import numpy as np           # Numerical computing
+import pandas as pd          # Data manipulation
+import matplotlib.pyplot as plt  # Data visualization
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+                </pre
+          >
+        </div>
+      </div>
+
+      <!-- Live Demo Introduction -->
+      <div class="slide">
+        <div class="slide-number">6/8</div>
+        <h2>🎯 Live Project: House Price Prediction</h2>
+        <p>
+          Let's build a real AI model that predicts house prices based on size
+          and location!
+        </p>
+
+        <h3>What we'll learn:</h3>
+        <ul>
+          <li>Data preparation and visualization</li>
+          <li>Training a machine learning model</li>
+          <li>Making predictions with new data</li>
+          <li>Evaluating model performance</li>
+        </ul>
+
+        <div class="code-section">
+          <div class="code-header">Project Overview</div>
+          <pre>
+# Our AI Pipeline:
+# 1. Generate synthetic house data
+# 2. Visualize the data patterns
+# 3. Train a Linear Regression model
+# 4. Make predictions on new houses
+# 5. Evaluate accuracy
+                </pre
+          >
+        </div>
+      </div>
+
+      <!-- Live Demo -->
+      <div class="slide">
+        <div class="slide-number">7/8</div>
+        <div class="live-demo">
+          <h2 style="color: #00ff00">
+            🚀 Interactive AI Demo: House Price Predictor
+          </h2>
+
+          <div class="demo-controls">
+            <input
+              type="number"
+              id="houseSize"
+              placeholder="House Size (sq ft)"
+              value="1500"
+              min="500"
+              max="5000"
+            />
+            <select id="location">
+              <option value="1">Urban</option>
+              <option value="0.7">Suburban</option>
+              <option value="0.5">Rural</option>
+            </select>
+            <button onclick="generateData()">🔄 Generate New Dataset</button>
+            <button onclick="trainModel()">🎯 Train AI Model</button>
+            <button onclick="predictPrice()">💰 Predict Price</button>
+          </div>
+
+          <div class="demo-output" id="output">
+            Click "Generate New Dataset" to start the AI demonstration!
+          </div>
+
+          <div style="margin-top: 20px">
+            <canvas
+              id="dataChart"
+              width="600"
+              height="300"
+              style="background: white; border-radius: 8px; max-width: 100%"
+            ></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Complete Python Code -->
+      <div class="slide">
+        <div class="slide-number">8/8</div>
+        <h2>📝 Complete Python Implementation</h2>
+
+        <div class="code-section">
+          <div class="code-header">house_price_predictor.py</div>
+          <pre>
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+
+class HousePricePredictor:
+    def __init__(self):
+        self.model = LinearRegression()
+        self.is_trained = False
+        
+    def generate_data(self, n_samples=100):
+        """Generate synthetic house data"""
+        np.random.seed(42)
+        
+        # Features: size (sq ft), location multiplier
+        sizes = np.random.normal(2000, 800, n_samples)
+        sizes = np.clip(sizes, 500, 5000)  # Realistic range
+        
+        location_multipliers = np.random.choice([0.5, 0.7, 1.0], n_samples, 
+                                              p=[0.3, 0.4, 0.3])  # Rural, Suburban, Urban
+        
+        # Price formula with some noise
+        base_price = 50000
+        price_per_sqft = 150
+        noise = np.random.normal(0, 20000, n_samples)
+        
+        prices = base_price + (sizes * price_per_sqft * location_multipliers) + noise
+        prices = np.clip(prices, 50000, 1000000)  # Realistic price range
+        
+        self.X = np.column_stack([sizes, location_multipliers])
+        self.y = prices
+        
+        return self.X, self.y
+    
+    def train(self):
+        """Train the AI model"""
+        if self.X is None or self.y is None:
+            raise ValueError("Please generate data first!")
+            
+        # Split data into training and testing sets
+        X_train, X_test, y_train, y_test = train_test_split(
+            self.X, self.y, test_size=0.2, random_state=42
+        )
+        
+        # Train the model
+        self.model.fit(X_train, y_train)
+        
+        # Evaluate performance
+        y_pred = self.model.predict(X_test)
+        mse = mean_squared_error(y_test, y_pred)
+        r2 = r2_score(y_test, y_pred)
+        
+        self.is_trained = True
+        return mse, r2, X_test, y_test, y_pred
+    
+    def predict(self, size, location_multiplier):
+        """Predict house price for given features"""
+        if not self.is_trained:
+            raise ValueError("Model must be trained first!")
+            
+        features = np.array([[size, location_multiplier]])
+        prediction = self.model.predict(features)[0]
+        return prediction
+    
+    def visualize_data(self):
+        """Create visualization of the data"""
+        if self.X is None:
+            return None
+            
+        plt.figure(figsize=(10, 6))
+        
+        # Color code by location
+        colors = ['red', 'orange', 'green']
+        location_labels = ['Rural', 'Suburban', 'Urban']
+        
+        for i, multiplier in enumerate([0.5, 0.7, 1.0]):
+            mask = self.X[:, 1] == multiplier
+            plt.scatter(self.X[mask, 0], self.y[mask], 
+                       c=colors[i], label=location_labels[i], alpha=0.7)
+        
+        plt.xlabel('House Size (sq ft)')
+        plt.ylabel('Price ($)')
+        plt.title('House Prices by Size and Location')
+        plt.legend()
+        plt.grid(True, alpha=0.3)
+        return plt
+
+# Example usage:
+if __name__ == "__main__":
+    # Create predictor instance
+    predictor = HousePricePredictor()
+    
+    # Generate synthetic data
+    X, y = predictor.generate_data(100)
+    print(f"Generated {len(X)} house samples")
+    
+    # Train the model
+    mse, r2, X_test, y_test, y_pred = predictor.train()
+    print(f"Model trained! R² Score: {r2:.3f}")
+    
+    # Make predictions
+    predicted_price = predictor.predict(2000, 1.0)  # 2000 sq ft urban house
+    print(f"Predicted price for 2000 sq ft urban house: ${predicted_price:,.0f}")
+    
+    # Visualize results
+    predictor.visualize_data()
+    plt.show()
+                </pre
+          >
+        </div>
+      </div>
+
+      <!-- Conclusion Slide -->
+      <div class="slide conclusion">
+        <h2>🎉 Key Takeaways</h2>
+        <p style="font-size: 1.2em; margin: 20px 0">
+          ✅ AI is about making machines that can learn and solve problems<br />
+          ✅ Machine Learning uses data to train models<br />
+          ✅ Python provides powerful tools for AI development<br />
+          ✅ Even simple models can make useful predictions<br />
+          ✅ The key is good data and proper validation
+        </p>
+        <p style="margin-top: 30px; font-size: 1.1em">
+          <strong>Next Steps:</strong> Explore more complex algorithms, deep
+          learning, and real datasets!
+        </p>
+      </div>
+    </div>
+
+    <script>
+      // AI Model Implementation
+      class SimpleLinearRegression {
+        constructor() {
+          this.slope = 0;
+          this.intercept = 0;
+          this.locationCoeff = 0;
+          this.trained = false;
+        }
+
+        fit(X, y) {
+          // Simple implementation using normal equation
+          const n = X.length;
+          let sumX = 0,
+            sumY = 0,
+            sumXY = 0,
+            sumX2 = 0,
+            sumLocation = 0,
+            sumLocationY = 0;
+
+          for (let i = 0; i < n; i++) {
+            sumX += X[i][0];
+            sumY += y[i];
+            sumXY += X[i][0] * y[i];
+            sumX2 += X[i][0] * X[i][0];
+            sumLocation += X[i][1];
+            sumLocationY += X[i][1] * y[i];
+          }
+
+          // Calculate coefficients (simplified for demonstration)
+          this.slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+          this.intercept = (sumY - this.slope * sumX) / n;
+          this.locationCoeff =
+            (sumLocationY - this.intercept * sumLocation - this.slope * sumX) /
+            (sumLocation || 1);
+          this.trained = true;
+        }
+
+        predict(size, locationMultiplier) {
+          if (!this.trained) return null;
+          return (
+            this.intercept +
+            this.slope * size +
+            this.locationCoeff * locationMultiplier * 100000
+          );
+        }
+      }
+
+      let dataset = [];
+      let model = new SimpleLinearRegression();
+      let chart = null;
+
+      function generateData() {
+        dataset = [];
+        const output = document.getElementById("output");
+
+        // Generate 50 synthetic house data points
+        for (let i = 0; i < 50; i++) {
+          const size = Math.random() * 3000 + 800; // 800-3800 sq ft
+          const locationMultiplier =
+            Math.random() > 0.5 ? (Math.random() > 0.5 ? 1.0 : 0.7) : 0.5;
+          const basePrice = 50000 + size * 120 * locationMultiplier;
+          const noise = (Math.random() - 0.5) * 40000;
+          const price = Math.max(basePrice + noise, 50000);
+
+          dataset.push({
+            size: Math.round(size),
+            locationMultiplier: locationMultiplier,
+            price: Math.round(price),
+          });
+        }
+
+        output.innerHTML = `
+✅ Generated ${dataset.length} house data points!
+
+📊 Sample Data:
+${dataset
+  .slice(0, 5)
+  .map(
+    (d, i) =>
+      `House ${i + 1}: ${d.size} sq ft, ${
+        d.locationMultiplier === 1
+          ? "Urban"
+          : d.locationMultiplier === 0.7
+          ? "Suburban"
+          : "Rural"
+      }, $${d.price.toLocaleString()}`
+  )
+  .join("\n")}
+
+🎯 Ready to train the AI model!
+            `;
+
+        visualizeData();
+      }
+
+      function trainModel() {
+        if (dataset.length === 0) {
+          document.getElementById("output").innerHTML =
+            "❌ Please generate data first!";
+          return;
+        }
+
+        const output = document.getElementById("output");
+        output.innerHTML = "🔄 Training AI model...";
+
+        setTimeout(() => {
+          const X = dataset.map((d) => [d.size, d.locationMultiplier]);
+          const y = dataset.map((d) => d.price);
+
+          model.fit(X, y);
+
+          // Calculate some basic metrics
+          let totalError = 0;
+          let predictions = [];
+          for (let i = 0; i < dataset.length; i++) {
+            const pred = model.predict(
+              dataset[i].size,
+              dataset[i].locationMultiplier
+            );
+            predictions.push(pred);
+            totalError += Math.abs(pred - dataset[i].price);
+          }
+          const avgError = totalError / dataset.length;
+
+          output.innerHTML = `
+🎉 AI Model Successfully Trained!
+
+📈 Model Performance:
+• Average Error: $${Math.round(avgError).toLocaleString()}
+• Model Coefficients:
+  - Base Price: $${Math.round(model.intercept).toLocaleString()}
+  - Price per sq ft: $${Math.round(model.slope)}
+  - Location Impact: $${Math.round(model.locationCoeff).toLocaleString()}
+
+🚀 Model is ready to make predictions!
+                `;
+        }, 1000);
+      }
+
+      function predictPrice() {
+        if (!model.trained) {
+          document.getElementById("output").innerHTML =
+            "❌ Please train the model first!";
+          return;
+        }
+
+        const size = parseInt(document.getElementById("houseSize").value);
+        const locationMultiplier = parseFloat(
+          document.getElementById("location").value
+        );
+
+        if (!size || size < 500 || size > 5000) {
+          document.getElementById("output").innerHTML =
+            "❌ Please enter a valid house size (500-5000 sq ft)";
+          return;
+        }
+
+        const prediction = model.predict(size, locationMultiplier);
+        const locationName =
+          locationMultiplier === 1
+            ? "Urban"
+            : locationMultiplier === 0.7
+            ? "Suburban"
+            : "Rural";
+
+        document.getElementById("output").innerHTML = `
+🏠 AI Prediction Results:
+
+📍 Input:
+• House Size: ${size.toLocaleString()} sq ft
+• Location: ${locationName}
+
+💰 Predicted Price: $${Math.round(prediction).toLocaleString()}
+
+🎯 Confidence: The model predicts this house would cost approximately $${Math.round(
+          prediction
+        ).toLocaleString()} based on similar houses in the training data.
+
+💡 Try different sizes and locations to see how the AI adapts its predictions!
+            `;
+      }
+
+      function visualizeData() {
+        const canvas = document.getElementById("dataChart");
+        const ctx = canvas.getContext("2d");
+
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (dataset.length === 0) return;
+
+        // Set up chart dimensions
+        const padding = 50;
+        const chartWidth = canvas.width - 2 * padding;
+        const chartHeight = canvas.height - 2 * padding;
+
+        // Find data ranges
+        const sizes = dataset.map((d) => d.size);
+        const prices = dataset.map((d) => d.price);
+        const minSize = Math.min(...sizes);
+        const maxSize = Math.max(...sizes);
+        const minPrice = Math.min(...prices);
+        const maxPrice = Math.max(...prices);
+
+        // Draw axes
+        ctx.strokeStyle = "#333";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(padding, padding);
+        ctx.lineTo(padding, canvas.height - padding);
+        ctx.lineTo(canvas.width - padding, canvas.height - padding);
+        ctx.stroke();
+
+        // Draw data points
+        dataset.forEach((d) => {
+          const x =
+            padding + ((d.size - minSize) / (maxSize - minSize)) * chartWidth;
+          const y =
+            canvas.height -
+            padding -
+            ((d.price - minPrice) / (maxPrice - minPrice)) * chartHeight;
+
+          ctx.fillStyle =
+            d.locationMultiplier === 1
+              ? "#00ff00"
+              : d.locationMultiplier === 0.7
+              ? "#ffff00"
+              : "#ff6666";
+          ctx.beginPath();
+          ctx.arc(x, y, 4, 0, 2 * Math.PI);
+          ctx.fill();
+        });
+
+        // Add labels
+        ctx.fillStyle = "#333";
+        ctx.font = "14px Arial";
+        ctx.fillText(
+          "House Size (sq ft)",
+          canvas.width / 2 - 50,
+          canvas.height - 10
+        );
+
+        ctx.save();
+        ctx.translate(15, canvas.height / 2);
+        ctx.rotate(-Math.PI / 2);
+        ctx.fillText("Price ($)", 0, 0);
+        ctx.restore();
+
+        // Legend
+        ctx.fillStyle = "#00ff00";
+        ctx.fillRect(canvas.width - 150, 20, 10, 10);
+        ctx.fillStyle = "#333";
+        ctx.fillText("Urban", canvas.width - 135, 30);
+
+        ctx.fillStyle = "#ffff00";
+        ctx.fillRect(canvas.width - 150, 40, 10, 10);
+        ctx.fillStyle = "#333";
+        ctx.fillText("Suburban", canvas.width - 135, 50);
+
+        ctx.fillStyle = "#ff6666";
+        ctx.fillRect(canvas.width - 150, 60, 10, 10);
+        ctx.fillStyle = "#333";
+        ctx.fillText("Rural", canvas.width - 135, 70);
+      }
+
+      // Create floating background shapes
+      function createFloatingShapes() {
+        const bg = document.getElementById("animatedBg");
+        for (let i = 0; i < 10; i++) {
+          const shape = document.createElement("div");
+          shape.className = "floating-shape";
+          shape.style.width = Math.random() * 100 + 50 + "px";
+          shape.style.height = shape.style.width;
+          shape.style.left = Math.random() * 100 + "%";
+          shape.style.top = Math.random() * 100 + "%";
+          shape.style.animationDelay = Math.random() * 6 + "s";
+          bg.appendChild(shape);
+        }
+      }
+
+      // Initialize
+      window.onload = function () {
+        createFloatingShapes();
+        generateData();
+      };
+    </script>
+  </body>
+</html>
